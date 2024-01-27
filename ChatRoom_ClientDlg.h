@@ -30,4 +30,12 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedSend();
+	// 将要发出的信息字符串
+	CString m_text_send;
+	// 用户名（最长15个字符）
+	CString m_username;
+	// 密码（最长20个字符）
+	CString m_password;
 };

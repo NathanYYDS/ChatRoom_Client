@@ -19,6 +19,9 @@
 
 CChatRoomClientDlg::CChatRoomClientDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_CHATROOM_CLIENT_DIALOG, pParent)
+	, m_text_send(_T(""))
+	, m_username(_T(""))
+	, m_password(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -26,11 +29,17 @@ CChatRoomClientDlg::CChatRoomClientDlg(CWnd* pParent /*=nullptr*/)
 void CChatRoomClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_TEXT_SEND, m_text_send);
+	DDX_Text(pDX, IDC_USERNAME, m_username);
+	DDV_MaxChars(pDX, m_username, 15);
+	DDX_Text(pDX, IDC_PASSWORD, m_password);
+	DDV_MaxChars(pDX, m_password, 20);
 }
 
 BEGIN_MESSAGE_MAP(CChatRoomClientDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_SEND, &CChatRoomClientDlg::OnBnClickedSend)
 END_MESSAGE_MAP()
 
 
@@ -86,3 +95,10 @@ HCURSOR CChatRoomClientDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+// 发送按钮功能实现
+void CChatRoomClientDlg::OnBnClickedSend()
+{
+	UpdateData(true);
+	MessageBox(m_text_send);
+}
