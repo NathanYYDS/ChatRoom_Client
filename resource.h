@@ -11,7 +11,6 @@
 #define ID_CONNECT_TEST                 1001
 #define IDC_SEND                        1001
 #define ID_CONNECT_APPLY                1002
-#define IDC_LIST1                       1002
 #define IDC_IPADDRESS1                  1003
 #define IDC_SERVER_SETTING              1003
 #define IDC_EDIT1                       1004

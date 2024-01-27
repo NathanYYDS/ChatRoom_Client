@@ -38,4 +38,6 @@ public:
 	CString m_username;
 	// 密码（最长20个字符）
 	CString m_password;
+	afx_msg void OnBnClickedServerSetting();
+	afx_msg void OnBnClickedSignup();
 };

@@ -7,6 +7,9 @@
 #include "ChatRoom_Client.h"
 #include "ChatRoom_ClientDlg.h"
 #include "afxdialogex.h"
+#include "CServerSettingDlg.h"
+#include "CSignUpDlg.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -40,6 +43,8 @@ BEGIN_MESSAGE_MAP(CChatRoomClientDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_SEND, &CChatRoomClientDlg::OnBnClickedSend)
+	ON_BN_CLICKED(IDC_SERVER_SETTING, &CChatRoomClientDlg::OnBnClickedServerSetting)
+	ON_BN_CLICKED(IDC_SIGNUP, &CChatRoomClientDlg::OnBnClickedSignup)
 END_MESSAGE_MAP()
 
 
@@ -99,6 +104,22 @@ HCURSOR CChatRoomClientDlg::OnQueryDragIcon()
 // 发送按钮功能实现
 void CChatRoomClientDlg::OnBnClickedSend()
 {
-	UpdateData(true);
+	UpdateData(true);//更新控件中数据到关联变量
 	MessageBox(m_text_send);
+}
+
+
+//服务器设置按钮功能实现
+void CChatRoomClientDlg::OnBnClickedServerSetting()
+{
+	CServerSettingDlg ServerSettingDlg;
+	ServerSettingDlg.DoModal();//弹出模态对话框
+}
+
+
+//注册按钮功能实现
+void CChatRoomClientDlg::OnBnClickedSignup()
+{
+	CSignUpDlg SighUpDlg;
+	SighUpDlg.DoModal();//弹出模态对话框
 }
