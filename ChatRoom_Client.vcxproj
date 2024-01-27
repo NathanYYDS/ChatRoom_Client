@@ -185,6 +185,8 @@
   <ItemGroup>
     <ClInclude Include="ChatRoom_Client.h" />
     <ClInclude Include="ChatRoom_ClientDlg.h" />
+    <ClInclude Include="CServerSettingDlg.h" />
+    <ClInclude Include="CSignUpDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -193,6 +195,8 @@
   <ItemGroup>
     <ClCompile Include="ChatRoom_Client.cpp" />
     <ClCompile Include="ChatRoom_ClientDlg.cpp" />
+    <ClCompile Include="CServerSettingDlg.cpp" />
+    <ClCompile Include="CSignUpDlg.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
