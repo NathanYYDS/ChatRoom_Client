@@ -40,4 +40,10 @@ public:
 	CString m_password;
 	afx_msg void OnBnClickedServerSetting();
 	afx_msg void OnBnClickedSignup();
+	afx_msg void OnBnClickedSignin();
+	// // 检查账号字符串是否合法
+//	static bool CheckUsername(Cstring* p);
+//	static bool CheckUsername(CString* s);
+	static bool CheckUsername(CString s);
+	static bool CheckPassword(CString s);
 };

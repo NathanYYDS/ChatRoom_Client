@@ -45,6 +45,7 @@ BEGIN_MESSAGE_MAP(CChatRoomClientDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_SEND, &CChatRoomClientDlg::OnBnClickedSend)
 	ON_BN_CLICKED(IDC_SERVER_SETTING, &CChatRoomClientDlg::OnBnClickedServerSetting)
 	ON_BN_CLICKED(IDC_SIGNUP, &CChatRoomClientDlg::OnBnClickedSignup)
+	ON_BN_CLICKED(IDC_SIGNIN, &CChatRoomClientDlg::OnBnClickedSignin)
 END_MESSAGE_MAP()
 
 
@@ -105,7 +106,7 @@ HCURSOR CChatRoomClientDlg::OnQueryDragIcon()
 void CChatRoomClientDlg::OnBnClickedSend()
 {
 	UpdateData(true);//更新控件中数据到关联变量
-	MessageBox(m_text_send);
+	//MessageBox(m_text_send);
 }
 
 
@@ -122,4 +123,66 @@ void CChatRoomClientDlg::OnBnClickedSignup()
 {
 	CSignUpDlg SighUpDlg;
 	SighUpDlg.DoModal();//弹出模态对话框
+}
+
+
+void CChatRoomClientDlg::OnBnClickedSignin()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	// 获取账号和密码框的数据
+	UpdateData(true);
+
+	// 测试数据是否获取成功
+	//MessageBox(m_username);
+	//MessageBox(m_password);
+
+	//检查账号密码合法性
+	if (!CheckUsername(m_username))
+	{
+		MessageBox(L"账号字符串非法");
+	}
+	if (!CheckPassword(m_password))
+	{
+		MessageBox(L"密码字符串非法");
+	}
+}
+
+
+//检查账号合法性
+bool CChatRoomClientDlg::CheckUsername(CString s)
+{
+	short len = CStringA(s).GetLength();
+	if (len == 0)
+		return false;
+	unsigned char c;
+	for (int i = 0; i != len; i++)
+	{
+		c = s[i];
+		if (!((c <= 'Z' && c >= 'A') || (c <= 'z' && c >= 'a') || (c <= '9' && c >= '0') || c == '_'))
+			return false;
+	}
+	return true;
+}
+
+
+//检查密码合法性
+bool CChatRoomClientDlg::CheckPassword(CString s)
+{
+	short len = CStringA(s).GetLength();
+	if (len == 0)
+		return false;
+	unsigned char c;
+	for (int i = 0; i != len; i++)
+	{
+		c = s[i];
+		if (!((c >= 'a' && c <= 'z')
+			|| (c >= 'A' && c <= 'Z')
+			|| (c >= '0' && c <= '9')
+			|| (c >= 33 && c <= 47) //特殊字符
+			|| (c >= 58 && c <= 64)
+			|| (c >= 91 && c <= 96)
+			|| (c >= 123 && c <= 126)))
+			return false;
+	}
+	return true;
 }
