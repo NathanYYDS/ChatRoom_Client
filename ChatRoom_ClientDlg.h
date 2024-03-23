@@ -3,6 +3,9 @@
 //
 
 #pragma once
+
+#define WM_CONNECT (WM_USER+100)
+
 #include "CServerSettingDlg.h"
 
 // CChatRoomClientDlg 对话框
@@ -30,6 +33,7 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+	afx_msg LRESULT OnConnect(WPARAM wParam, LPARAM lParam);
 public:
 	afx_msg void OnBnClickedSend();
 	// 将要发出的信息字符串

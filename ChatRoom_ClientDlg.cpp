@@ -3,6 +3,7 @@
 //
 
 #include "pch.h"
+#include "stdio.h"
 #include "framework.h"
 #include "ChatRoom_Client.h"
 #include "ChatRoom_ClientDlg.h"
@@ -46,6 +47,7 @@ BEGIN_MESSAGE_MAP(CChatRoomClientDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_SERVER_SETTING, &CChatRoomClientDlg::OnBnClickedServerSetting)
 	ON_BN_CLICKED(IDC_SIGNUP, &CChatRoomClientDlg::OnBnClickedSignup)
 	ON_BN_CLICKED(IDC_SIGNIN, &CChatRoomClientDlg::OnBnClickedSignin)
+	ON_MESSAGE(WM_CONNECT,&CChatRoomClientDlg::OnConnect)
 END_MESSAGE_MAP()
 
 
@@ -185,5 +187,13 @@ bool CChatRoomClientDlg::CheckPassword(CString s)
 			|| (c >= 123 && c <= 126)))
 			return false;
 	}
+	return true;
+}
+
+
+afx_msg LRESULT CChatRoomClientDlg::OnConnect(WPARAM wParam, LPARAM lParam)
+{
+	//连接服务器
+
 	return true;
 }

@@ -2,6 +2,7 @@
 //
 
 #include "pch.h"
+#include "ChatRoom_ClientDlg.h"
 #include "ChatRoom_Client.h"
 #include "afxdialogex.h"
 #include "CServerSettingDlg.h"
@@ -51,6 +52,8 @@ void CServerSettingDlg::OnBnClickedConnectApply()
 	GetDlgItemText(IDC_IPADDRESS, m_ip);
 	
 	CServerSettingDlg::ShowWindow(SW_HIDE);
+	HWND parhwnd = GetParent()->m_hWnd;//取得父窗口句柄
+	::SendMessage(parhwnd, WM_CONNECT, NULL, NULL);//向父窗口发消息
 }
 
 

@@ -31,4 +31,6 @@ public:
 	CString m_ip;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedConnectTest();
+//	virtual void OnCancel();
+//	virtual void PostNcDestroy();
 };
