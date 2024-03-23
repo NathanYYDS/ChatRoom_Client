@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+#include "CServerSettingDlg.h"
 
 // CChatRoomClientDlg 对话框
 class CChatRoomClientDlg : public CDialogEx
@@ -46,4 +46,6 @@ public:
 //	static bool CheckUsername(CString* s);
 	static bool CheckUsername(CString s);
 	static bool CheckPassword(CString s);
+private:
+	CServerSettingDlg ServerSettingDlg;
 };

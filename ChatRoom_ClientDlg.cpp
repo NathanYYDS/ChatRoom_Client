@@ -61,6 +61,7 @@ BOOL CChatRoomClientDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	ServerSettingDlg.Create(IDD_SERVER_SETTING_DIALOG, NULL);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -113,16 +114,16 @@ void CChatRoomClientDlg::OnBnClickedSend()
 //服务器设置按钮功能实现
 void CChatRoomClientDlg::OnBnClickedServerSetting()
 {
-	CServerSettingDlg ServerSettingDlg;
-	ServerSettingDlg.DoModal();//弹出模态对话框
+	ServerSettingDlg.ShowWindow(SW_SHOW);//弹出非模态对话框
+	//MessageBox(ServerSettingDlg.m_ip);
 }
 
 
 //注册按钮功能实现
 void CChatRoomClientDlg::OnBnClickedSignup()
 {
-	CSignUpDlg SighUpDlg;
-	SighUpDlg.DoModal();//弹出模态对话框
+	CSignUpDlg SignUpDlg;
+	SignUpDlg.DoModal();//弹出模态对话框
 }
 
 

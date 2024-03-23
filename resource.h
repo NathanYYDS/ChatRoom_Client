@@ -13,9 +13,12 @@
 #define ID_CONNECT_APPLY                1002
 #define IDC_IPADDRESS1                  1003
 #define IDC_SERVER_SETTING              1003
+#define IDC_IPADDRESS                   1003
 #define IDC_EDIT1                       1004
 #define IDC_CONNECT_STATUS              1004
+#define IDC_PORT                        1004
 #define IDC_EDIT2                       1005
+#define IDC_PASSWD                      1005
 #define IDC_SIGNIN                      1006
 #define IDC_PASSWORD                    1007
 #define IDC_SIGNUP_PASSWORD2            1008
@@ -26,7 +29,6 @@
 #define IDC_SIGNUP_USERNAME             1011
 #define IDC_MESSAGE                     1011
 #define IDC_SIGNUP_PASSWORD1            1012
-#define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 

@@ -21,4 +21,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+	// 注册的用户名
+	CEdit m_user;
 };

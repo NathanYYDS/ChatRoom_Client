@@ -24,6 +24,7 @@ CSignUpDlg::~CSignUpDlg()
 void CSignUpDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_SIGNUP_USERNAME, m_user);
 }
 
 

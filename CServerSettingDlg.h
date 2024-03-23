@@ -21,4 +21,14 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+	// 服务器密码
+	CEdit m_password;
+	afx_msg void OnBnClickedConnectApply();
+	// 服务器端口
+	CString m_port;
+	// 服务器IP地址
+	CString m_ip;
+	virtual BOOL OnInitDialog();
+	afx_msg void OnBnClickedConnectTest();
 };
