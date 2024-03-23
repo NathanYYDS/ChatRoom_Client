@@ -70,5 +70,6 @@ BOOL CServerSettingDlg::OnInitDialog()
 void CServerSettingDlg::OnBnClickedConnectTest()
 {
 	// 测试服务器设置是否有效
+
 	UpdateData(true);
 }
