@@ -23,7 +23,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	// 服务器密码
-	CEdit m_password;
+//	CEdit m_password;
 	afx_msg void OnBnClickedConnectApply();
 	// 服务器端口
 	CString m_port;
@@ -31,6 +31,20 @@ public:
 	CString m_ip;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedConnectTest();
-//	virtual void OnCancel();
+	// 服务器密码
 //	virtual void PostNcDestroy();
+// 服务器密码
+	CString m_password;
+private:
+	// 检查IP合法性
+//	bool CheckIP(CString ip);
+public:
+	// 检查IP合法性
+//	bool CheckIP(CString* ip);
+//	bool CheckIP(CString ip);
+private:
+//	static bool CheckSetting();
+public:
+	// 检查服务器设置合法性
+	bool CheckSetting();
 };

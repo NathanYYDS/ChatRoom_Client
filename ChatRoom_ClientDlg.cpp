@@ -109,6 +109,11 @@ HCURSOR CChatRoomClientDlg::OnQueryDragIcon()
 void CChatRoomClientDlg::OnBnClickedSend()
 {
 	UpdateData(true);//更新控件中数据到关联变量
+	if (m_text_send == "")
+	{
+		MessageBox("发送内容不可为空");
+		return;
+	}
 	//MessageBox(m_text_send);
 }
 
@@ -142,11 +147,11 @@ void CChatRoomClientDlg::OnBnClickedSignin()
 	//检查账号密码合法性
 	if (!CheckUsername(m_username))
 	{
-		MessageBox(L"账号字符串非法");
+		MessageBox("账号字符串非法");
 	}
 	if (!CheckPassword(m_password))
 	{
-		MessageBox(L"密码字符串非法");
+		MessageBox("密码字符串非法");
 	}
 }
 
