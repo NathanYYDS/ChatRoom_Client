@@ -87,7 +87,11 @@ void CServerSettingDlg::OnBnClickedConnectTest()
 
 	//设置合法性检测
 	if (!CheckSetting())
+	{
+		MessageBox("服务器设置不合法");
 		return;
+	}
+		
 }
 
 

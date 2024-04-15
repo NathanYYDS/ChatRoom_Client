@@ -24,4 +24,5 @@ protected:
 public:
 	// 注册的用户名
 	CEdit m_user;
+	afx_msg void OnBnClickedSignupConfirm();
 };

@@ -29,7 +29,14 @@ void CSignUpDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CSignUpDlg, CDialogEx)
+	ON_BN_CLICKED(ID_SIGNUP_CONFIRM, &CSignUpDlg::OnBnClickedSignupConfirm)
 END_MESSAGE_MAP()
 
 
 // CSignUpDlg 消息处理程序
+
+
+void CSignUpDlg::OnBnClickedSignupConfirm()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
