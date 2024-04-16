@@ -47,4 +47,5 @@ private:
 public:
 	// 检查服务器设置合法性
 	bool CheckSetting();
+//	SOCKET clientSocket;
 };

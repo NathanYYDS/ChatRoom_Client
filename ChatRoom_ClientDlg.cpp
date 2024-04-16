@@ -19,6 +19,8 @@
 
 // CChatRoomClientDlg 对话框
 
+//定义对话框指针变量
+CChatRoomClientDlg* g_ChatRoomClientDlg;
 
 
 CChatRoomClientDlg::CChatRoomClientDlg(CWnd* pParent /*=nullptr*/)
@@ -47,7 +49,7 @@ BEGIN_MESSAGE_MAP(CChatRoomClientDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_SERVER_SETTING, &CChatRoomClientDlg::OnBnClickedServerSetting)
 	ON_BN_CLICKED(IDC_SIGNUP, &CChatRoomClientDlg::OnBnClickedSignup)
 	ON_BN_CLICKED(IDC_SIGNIN, &CChatRoomClientDlg::OnBnClickedSignin)
-	ON_MESSAGE(WM_CONNECT,&CChatRoomClientDlg::OnConnect)
+	ON_MESSAGE(WM_CONNECT, &CChatRoomClientDlg::OnConnect)
 END_MESSAGE_MAP()
 
 
@@ -63,7 +65,9 @@ BOOL CChatRoomClientDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	g_ChatRoomClientDlg = this;
 	ServerSettingDlg.Create(IDD_SERVER_SETTING_DIALOG, NULL);
+
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -201,4 +205,12 @@ afx_msg LRESULT CChatRoomClientDlg::OnConnect(WPARAM wParam, LPARAM lParam)
 	//连接服务器
 
 	return true;
+}
+
+BOOL CChatRoomClientDlg::DestroyWindow()
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	closesocket(g_ChatRoomClientDlg->clientSocket);
+	WSACleanup();
+	return CDialogEx::DestroyWindow();
 }

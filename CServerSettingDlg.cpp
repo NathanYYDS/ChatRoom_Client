@@ -7,8 +7,9 @@
 #include "afxdialogex.h"
 #include "CServerSettingDlg.h"
 #include "string.h"
-#include "iostream"
+//#include "iostream"
 
+extern CChatRoomClientDlg* g_ChatRoomClientDlg;
 
 // CServerSettingDlg 对话框
 
@@ -80,10 +81,11 @@ BOOL CServerSettingDlg::OnInitDialog()
 //测试连接
 void CServerSettingDlg::OnBnClickedConnectTest()
 {
-	// 获取数据
+	// 获取并处理数据
 	m_ip.Empty();
 	UpdateData(true);
 	GetDlgItemText(IDC_IPADDRESS, m_ip);
+	u_short port = atoi(m_port);  //CString转int
 
 	//设置合法性检测
 	if (!CheckSetting())
@@ -91,7 +93,26 @@ void CServerSettingDlg::OnBnClickedConnectTest()
 		MessageBox("服务器设置不合法");
 		return;
 	}
-		
+
+	//初始化套接字
+	g_ChatRoomClientDlg->clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	g_ChatRoomClientDlg->serverAddr.sin_family = AF_INET;
+	g_ChatRoomClientDlg->serverAddr.sin_port = htons(port);
+	inet_pton(AF_INET, m_ip.GetString(), &(g_ChatRoomClientDlg->serverAddr).sin_addr);
+
+	//测试
+	//MessageBox(m_ip.GetString());
+	//MessageBox(m_port);
+
+	// 连接到服务器
+	if (connect(g_ChatRoomClientDlg->clientSocket, reinterpret_cast<sockaddr*>(&(g_ChatRoomClientDlg->serverAddr)), sizeof(g_ChatRoomClientDlg->serverAddr)) == SOCKET_ERROR)
+	{
+		MessageBox("Error connecting to server.");
+		closesocket(g_ChatRoomClientDlg->clientSocket);
+		return;
+	}
+	MessageBox("测试完成,连接正常");
+	closesocket(g_ChatRoomClientDlg->clientSocket);
 }
 
 

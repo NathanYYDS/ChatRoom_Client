@@ -46,10 +46,14 @@ public:
 	afx_msg void OnBnClickedSignup();
 	afx_msg void OnBnClickedSignin();
 	// // 检查账号字符串是否合法
-//	static bool CheckUsername(Cstring* p);
-//	static bool CheckUsername(CString* s);
 	static bool CheckUsername(CString s);
 	static bool CheckPassword(CString s);
 private:
 	CServerSettingDlg ServerSettingDlg;
+public:
+//	SOCKET clientSocket;
+//	sockaddr_in serverAddr;
+	SOCKET clientSocket;
+	sockaddr_in serverAddr;
+	virtual BOOL DestroyWindow();
 };
