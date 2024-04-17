@@ -52,6 +52,7 @@ END_MESSAGE_MAP()
 // 应用并返回
 void CServerSettingDlg::OnBnClickedConnectApply()
 {
+	g_ChatRoomClientDlg->g_recvMessageThread = TRUE;
 	//更新数据
 	m_ip.Empty();
 	UpdateData(true);
@@ -64,6 +65,7 @@ void CServerSettingDlg::OnBnClickedConnectApply()
 	//向主对话框发送可以连接的消息
 	CServerSettingDlg::ShowWindow(SW_HIDE);
 	HWND parhwnd = GetParent()->m_hWnd;//取得父窗口句柄
+	g_ChatRoomClientDlg->g_recvMessageThread = FALSE;//启用线程循环
 	::SendMessage(parhwnd, WM_CONNECT, NULL, NULL);//向父窗口发消息
 }
 
@@ -85,7 +87,6 @@ void CServerSettingDlg::OnBnClickedConnectTest()
 	m_ip.Empty();
 	UpdateData(true);
 	GetDlgItemText(IDC_IPADDRESS, m_ip);
-	u_short port = atoi(m_port);  //CString转int
 
 	//设置合法性检测
 	if (!CheckSetting())
@@ -97,13 +98,16 @@ void CServerSettingDlg::OnBnClickedConnectTest()
 	//初始化套接字
 	g_ChatRoomClientDlg->clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	g_ChatRoomClientDlg->serverAddr.sin_family = AF_INET;
-	g_ChatRoomClientDlg->serverAddr.sin_port = htons(port);
+	g_ChatRoomClientDlg->serverAddr.sin_port = htons(atoi(m_port));
 	inet_pton(AF_INET, m_ip.GetString(), &(g_ChatRoomClientDlg->serverAddr).sin_addr);
 
 	//测试
 	//MessageBox(m_ip.GetString());
 	//MessageBox(m_port);
 
+	// 创建一个新线程来接收服务器消息
+    //thread receiveThread(receiveMessages, clientSocket);
+	// 
 	// 连接到服务器
 	if (connect(g_ChatRoomClientDlg->clientSocket, reinterpret_cast<sockaddr*>(&(g_ChatRoomClientDlg->serverAddr)), sizeof(g_ChatRoomClientDlg->serverAddr)) == SOCKET_ERROR)
 	{

@@ -10,12 +10,14 @@
 #include "afxdialogex.h"
 #include "CServerSettingDlg.h"
 #include "CSignUpDlg.h"
+#include "thread"
 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+using namespace std;
 
 // CChatRoomClientDlg 对话框
 
@@ -113,11 +115,14 @@ HCURSOR CChatRoomClientDlg::OnQueryDragIcon()
 void CChatRoomClientDlg::OnBnClickedSend()
 {
 	UpdateData(true);//更新控件中数据到关联变量
-	if (m_text_send == "")
+	if (m_text_send.IsEmpty())
 	{
 		MessageBox("发送内容不可为空");
 		return;
 	}
+	//MessageBox("Enter message: ");
+	//getline(cin, message);
+	send(clientSocket, m_text_send, m_text_send.GetLength(), 0); // 发送消息到服务器
 	//MessageBox(m_text_send);
 }
 
@@ -202,15 +207,73 @@ bool CChatRoomClientDlg::CheckPassword(CString s)
 
 afx_msg LRESULT CChatRoomClientDlg::OnConnect(WPARAM wParam, LPARAM lParam)
 {
+	//TerminateThread(recvMessageThread.native_handle(),recvMessageThread.get_id())
 	//连接服务器
+	//初始化套接字
+	clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(atoi(ServerSettingDlg.m_port));
+	inet_pton(AF_INET, ServerSettingDlg.m_ip.GetString(), &(serverAddr).sin_addr);
+	if (connect(g_ChatRoomClientDlg->clientSocket, reinterpret_cast<sockaddr*>(&(g_ChatRoomClientDlg->serverAddr)), sizeof(g_ChatRoomClientDlg->serverAddr)) == SOCKET_ERROR)
+	{
+		MessageBox("Error connecting to server.");
+		closesocket(g_ChatRoomClientDlg->clientSocket);
+		return true;
+	}
+	MessageBox("测试完成,连接正常");
+	//closesocket(g_ChatRoomClientDlg->clientSocket);
 
+	//创建接收服务器消息的线程
+	AfxBeginThread((AFX_THREADPROC)receiveMessages, (LPVOID)this);
 	return true;
 }
 
 BOOL CChatRoomClientDlg::DestroyWindow()
 {
 	// TODO: 在此添加专用代码和/或调用基类
+	g_recvMessageThread = TRUE;
 	closesocket(g_ChatRoomClientDlg->clientSocket);
 	WSACleanup();
 	return CDialogEx::DestroyWindow();
 }
+
+
+// 接收服务器消息的线程函数
+DWORD WINAPI CChatRoomClientDlg::receiveMessages(PVOID param)
+{
+	char buffer[102400]; // 用于接收消息的缓冲区
+	int bytesReceived;
+	while (g_ChatRoomClientDlg->g_recvMessageThread == FALSE)
+	{
+		// 接收服务器消息
+		bytesReceived = recv(g_ChatRoomClientDlg->clientSocket, buffer, sizeof(buffer), 0);
+
+		// 如果接收到的字节数小于等于0，表示与服务器断开连接
+		if (bytesReceived <= 0)
+		{
+			g_ChatRoomClientDlg->MessageBox("Disconnected from server.");
+			g_ChatRoomClientDlg->g_recvMessageThread = TRUE;
+			break;
+		}
+
+		//溢出漏洞---------------------------------溢出漏洞----------------------------------溢出漏洞
+		buffer[bytesReceived] = '\0'; // 添加字符串结束符
+		//溢出漏洞---------------------------------溢出漏洞----------------------------------溢出漏洞
+
+		//将下一条消息加入CString
+		g_ChatRoomClientDlg->g_Message.Insert(g_ChatRoomClientDlg->g_Message.GetLength(), buffer);
+
+		//添加消息间的换行符
+		g_ChatRoomClientDlg->g_Message += "\r\n\r\n";
+
+		//显示到窗口
+		g_ChatRoomClientDlg->GetDlgItem(IDC_MESSAGE)->SetWindowText(g_ChatRoomClientDlg->g_Message);
+
+		//将编辑框自动滚动到最下方
+		g_ChatRoomClientDlg->SendDlgItemMessage(IDC_MESSAGE, WM_VSCROLL, SB_BOTTOM, 0);
+	}
+	closesocket(g_ChatRoomClientDlg->clientSocket);
+	return 0;
+}
+
+
