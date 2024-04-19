@@ -71,4 +71,6 @@ public:
 	unsigned long long g_messageNum = 0;
 	//连接状态
 	bool connectStatus = FALSE;
+	// 显示服务器连接状态
+	CStatic m_ConnectStatus;
 };

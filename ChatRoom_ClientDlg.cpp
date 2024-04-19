@@ -42,6 +42,7 @@ void CChatRoomClientDlg::DoDataExchange(CDataExchange* pDX)
 	DDV_MaxChars(pDX, m_username, 15);
 	DDX_Text(pDX, IDC_PASSWORD, m_password);
 	DDV_MaxChars(pDX, m_password, 20);
+	DDX_Control(pDX, IDC_CONNECT_STATUS, m_ConnectStatus);
 }
 
 BEGIN_MESSAGE_MAP(CChatRoomClientDlg, CDialogEx)
@@ -239,10 +240,18 @@ afx_msg LRESULT CChatRoomClientDlg::OnConnect(WPARAM wParam, LPARAM lParam)
 		MessageBox("Error connecting to server.");
 		closesocket(g_ChatRoomClientDlg->clientSocket);
 		connectStatus = FALSE;
+
+		//修改服务器连接状态值 连接->断开
+		m_ConnectStatus.SetWindowTextA("断开");
+
 		return true;
 	}
 	MessageBox("正常连接至服务器");
 	connectStatus = TRUE;
+
+	//修改服务器连接状态值 断开->连接
+	m_ConnectStatus.SetWindowTextA("连接");
+
 	//closesocket(g_ChatRoomClientDlg->clientSocket);
 
 	//创建接收服务器消息的线程
