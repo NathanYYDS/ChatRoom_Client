@@ -109,8 +109,8 @@ void CServerSettingDlg::OnBnClickedConnectTest()
     //thread receiveThread(receiveMessages, clientSocket);
 	// 
 	//设置连接超时
-	int connectTimeout = 30;
-	setsockopt(sock, IPPROTO_TCP, TCP_CONNECTIONTIMEOUT, (char*)&connectTimeout, sizeof(connectTimeout));
+	//int connectTimeout = 30;
+	//setsockopt(sock, IPPROTO_TCP, TCP_CONNECTIONTIMEOUT, (char*)&connectTimeout, sizeof(connectTimeout));
 
 	// 连接到服务器
 	if (connect(g_ChatRoomClientDlg->clientSocket, reinterpret_cast<sockaddr*>(&(g_ChatRoomClientDlg->serverAddr)), sizeof(g_ChatRoomClientDlg->serverAddr)) == SOCKET_ERROR)
