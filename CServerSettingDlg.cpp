@@ -117,6 +117,25 @@ void CServerSettingDlg::OnBnClickedConnectTest()
 	{
 		MessageBox("Error connecting to server.");
 		closesocket(g_ChatRoomClientDlg->clientSocket);
+
+		//设置登录状态
+		g_ChatRoomClientDlg->signInStatus = FALSE;
+
+		//启用“用户”编辑框
+		g_ChatRoomClientDlg->GetDlgItem(IDC_USERNAME)->EnableWindow(TRUE);
+
+		//启用“密码”编辑框
+		g_ChatRoomClientDlg->GetDlgItem(IDC_PASSWORD)->EnableWindow(TRUE);
+
+		//显示“登录”按钮
+		g_ChatRoomClientDlg->GetDlgItem(IDC_SIGNIN)->ShowWindow(SW_SHOW);
+
+		//显示“注册”按钮
+		g_ChatRoomClientDlg->GetDlgItem(IDC_SIGNUP)->ShowWindow(SW_SHOW);
+
+		//隐藏“退出登录”按钮
+		g_ChatRoomClientDlg->GetDlgItem(IDC_SIGNOUT)->ShowWindow(SW_HIDE);
+
 		return;
 	}
 	MessageBox("测试完成,连接正常");

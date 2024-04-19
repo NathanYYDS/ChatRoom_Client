@@ -73,4 +73,7 @@ public:
 	bool connectStatus = FALSE;
 	// 显示服务器连接状态
 	CStatic m_ConnectStatus;
+	afx_msg void OnBnClickedSignout();
+	//登录状态
+	bool signInStatus = FALSE;
 };

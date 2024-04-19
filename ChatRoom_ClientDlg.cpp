@@ -53,6 +53,7 @@ BEGIN_MESSAGE_MAP(CChatRoomClientDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_SIGNUP, &CChatRoomClientDlg::OnBnClickedSignup)
 	ON_BN_CLICKED(IDC_SIGNIN, &CChatRoomClientDlg::OnBnClickedSignin)
 	ON_MESSAGE(WM_CONNECT, &CChatRoomClientDlg::OnConnect)
+	ON_BN_CLICKED(IDC_SIGNOUT, &CChatRoomClientDlg::OnBnClickedSignout)
 END_MESSAGE_MAP()
 
 
@@ -121,6 +122,14 @@ void CChatRoomClientDlg::OnBnClickedSend()
 		MessageBox("发送内容不可为空");
 		return;
 	}
+
+	//检测登录状态
+	if (signInStatus == FALSE)
+	{
+		MessageBox("请先登录");
+		return;
+	}
+
 	//MessageBox("Enter message: ");
 	//getline(cin, message);
 	send(clientSocket, m_text_send, m_text_send.GetLength(), 0); // 发送消息到服务器
@@ -143,7 +152,7 @@ void CChatRoomClientDlg::OnBnClickedSignup()
 	SignUpDlg.DoModal();//弹出模态对话框
 }
 
-
+//登录按钮功能实现
 void CChatRoomClientDlg::OnBnClickedSignin()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -169,7 +178,26 @@ void CChatRoomClientDlg::OnBnClickedSignin()
 	{
 		CString login;
 		login.Format("IIDD:%s", m_username);
-		send(clientSocket, login, login.GetLength(), 0); // 发送消息到服务器
+		send(clientSocket, login, login.GetLength(), 0); // 发送包含用户信息的登录消息到服务器
+
+		//设置登录状态成功
+		signInStatus = TRUE;
+
+		//禁用“用户”编辑框
+		GetDlgItem(IDC_USERNAME)->EnableWindow(FALSE);
+
+		//禁用“密码”编辑框
+		GetDlgItem(IDC_PASSWORD)->EnableWindow(FALSE);
+
+		//隐藏“登录”按钮
+		GetDlgItem(IDC_SIGNIN)->ShowWindow(SW_HIDE);
+
+		//隐藏“注册”按钮
+		GetDlgItem(IDC_SIGNUP)->ShowWindow(SW_HIDE);
+
+		//显示“退出登录”按钮
+		GetDlgItem(IDC_SIGNOUT)->ShowWindow(SW_SHOW);
+
 		return;
 	}
 	else 
@@ -244,6 +272,24 @@ afx_msg LRESULT CChatRoomClientDlg::OnConnect(WPARAM wParam, LPARAM lParam)
 		//修改服务器连接状态值 连接->断开
 		m_ConnectStatus.SetWindowTextA("断开");
 
+		//设置登录状态
+		signInStatus = FALSE;
+
+		//启用“用户”编辑框
+		GetDlgItem(IDC_USERNAME)->EnableWindow(TRUE);
+
+		//启用“密码”编辑框
+		GetDlgItem(IDC_PASSWORD)->EnableWindow(TRUE);
+
+		//显示“登录”按钮
+		GetDlgItem(IDC_SIGNIN)->ShowWindow(SW_SHOW);
+
+		//显示“注册”按钮
+		GetDlgItem(IDC_SIGNUP)->ShowWindow(SW_SHOW);
+
+		//隐藏“退出登录”按钮
+		GetDlgItem(IDC_SIGNOUT)->ShowWindow(SW_HIDE);
+
 		return true;
 	}
 	MessageBox("正常连接至服务器");
@@ -283,7 +329,29 @@ DWORD WINAPI CChatRoomClientDlg::receiveMessages(PVOID param)
 		if (bytesReceived <= 0)
 		{
 			g_ChatRoomClientDlg->MessageBox("Disconnected from server.");
+
+			g_ChatRoomClientDlg->m_ConnectStatus.SetWindowTextA("断开");
+
 			g_ChatRoomClientDlg->g_recvMessageThread = TRUE;
+
+			//设置登录状态
+			g_ChatRoomClientDlg->signInStatus = FALSE;
+
+			//启用“用户”编辑框
+			g_ChatRoomClientDlg->GetDlgItem(IDC_USERNAME)->EnableWindow(TRUE);
+
+			//启用“密码”编辑框
+			g_ChatRoomClientDlg->GetDlgItem(IDC_PASSWORD)->EnableWindow(TRUE);
+
+			//显示“登录”按钮
+			g_ChatRoomClientDlg->GetDlgItem(IDC_SIGNIN)->ShowWindow(SW_SHOW);
+
+			//显示“注册”按钮
+			g_ChatRoomClientDlg->GetDlgItem(IDC_SIGNUP)->ShowWindow(SW_SHOW);
+
+			//隐藏“退出登录”按钮
+			g_ChatRoomClientDlg->GetDlgItem(IDC_SIGNOUT)->ShowWindow(SW_HIDE);
+
 			break;
 		}
 
@@ -309,3 +377,36 @@ DWORD WINAPI CChatRoomClientDlg::receiveMessages(PVOID param)
 }
 
 
+
+//点击“退出登录”
+void CChatRoomClientDlg::OnBnClickedSignout()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+	////退出功能
+	//MessageBox("退出成功");
+	//closesocket(g_ChatRoomClientDlg->clientSocket);
+	//connectStatus = FALSE;
+
+	////修改服务器连接状态值 连接->断开
+	//m_ConnectStatus.SetWindowTextA("断开");
+
+
+	//设置登录状态
+	signInStatus = FALSE;
+
+	//启用“用户”编辑框
+	GetDlgItem(IDC_USERNAME)->EnableWindow(TRUE);
+
+	//启用“密码”编辑框
+	GetDlgItem(IDC_PASSWORD)->EnableWindow(TRUE);
+
+	//显示“登录”按钮
+	GetDlgItem(IDC_SIGNIN)->ShowWindow(SW_SHOW);
+
+	//显示“注册”按钮
+	GetDlgItem(IDC_SIGNUP)->ShowWindow(SW_SHOW);
+
+	//隐藏“退出登录”按钮
+	GetDlgItem(IDC_SIGNOUT)->ShowWindow(SW_HIDE);
+}
