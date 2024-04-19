@@ -69,4 +69,6 @@ public:
 	CString g_Message = "";
 	//全局消息数量
 	unsigned long long g_messageNum = 0;
+	//连接状态
+	bool connectStatus = FALSE;
 };

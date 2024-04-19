@@ -108,6 +108,10 @@ void CServerSettingDlg::OnBnClickedConnectTest()
 	// 创建一个新线程来接收服务器消息
     //thread receiveThread(receiveMessages, clientSocket);
 	// 
+	//设置连接超时
+	int connectTimeout = 30;
+	setsockopt(sock, IPPROTO_TCP, TCP_CONNECTIONTIMEOUT, (char*)&connectTimeout, sizeof(connectTimeout));
+
 	// 连接到服务器
 	if (connect(g_ChatRoomClientDlg->clientSocket, reinterpret_cast<sockaddr*>(&(g_ChatRoomClientDlg->serverAddr)), sizeof(g_ChatRoomClientDlg->serverAddr)) == SOCKET_ERROR)
 	{

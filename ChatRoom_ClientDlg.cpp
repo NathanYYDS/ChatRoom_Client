@@ -157,11 +157,26 @@ void CChatRoomClientDlg::OnBnClickedSignin()
 	if (!CheckUsername(m_username))
 	{
 		MessageBox("账号字符串非法");
+		return;
 	}
 	if (!CheckPassword(m_password))
 	{
 		MessageBox("密码字符串非法");
+		return;
 	}
+	if (connectStatus == TRUE)
+	{
+		CString login;
+		login.Format("IIDD:%s", m_username);
+		send(clientSocket, login, login.GetLength(), 0); // 发送消息到服务器
+		return;
+	}
+	else 
+	{
+		MessageBox("未连接至服务器");
+		return;
+	}
+	return;
 }
 
 
@@ -214,13 +229,20 @@ afx_msg LRESULT CChatRoomClientDlg::OnConnect(WPARAM wParam, LPARAM lParam)
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(atoi(ServerSettingDlg.m_port));
 	inet_pton(AF_INET, ServerSettingDlg.m_ip.GetString(), &(serverAddr).sin_addr);
+	
+	//设置连接超时
+	//int connectTimeout = 30;
+	//setsockopt(sock, IPPROTO_TCP, TCP_CONNECTIONTIMEOUT, (char*)&connectTimeout, sizeof(connectTimeout));
+	
 	if (connect(g_ChatRoomClientDlg->clientSocket, reinterpret_cast<sockaddr*>(&(g_ChatRoomClientDlg->serverAddr)), sizeof(g_ChatRoomClientDlg->serverAddr)) == SOCKET_ERROR)
 	{
 		MessageBox("Error connecting to server.");
 		closesocket(g_ChatRoomClientDlg->clientSocket);
+		connectStatus = FALSE;
 		return true;
 	}
-	MessageBox("测试完成,连接正常");
+	MessageBox("正常连接至服务器");
+	connectStatus = TRUE;
 	//closesocket(g_ChatRoomClientDlg->clientSocket);
 
 	//创建接收服务器消息的线程
@@ -273,6 +295,7 @@ DWORD WINAPI CChatRoomClientDlg::receiveMessages(PVOID param)
 		g_ChatRoomClientDlg->SendDlgItemMessage(IDC_MESSAGE, WM_VSCROLL, SB_BOTTOM, 0);
 	}
 	closesocket(g_ChatRoomClientDlg->clientSocket);
+	g_ChatRoomClientDlg->connectStatus = FALSE;
 	return 0;
 }
 
