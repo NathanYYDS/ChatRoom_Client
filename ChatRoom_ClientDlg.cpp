@@ -134,6 +134,7 @@ void CChatRoomClientDlg::OnBnClickedSend()
 	//getline(cin, message);
 	send(clientSocket, m_text_send, m_text_send.GetLength(), 0); // 发送消息到服务器
 	//MessageBox(m_text_send);
+	GetDlgItem(IDC_TEXT_SEND)->SetWindowText("");
 }
 
 
@@ -318,7 +319,7 @@ BOOL CChatRoomClientDlg::DestroyWindow()
 // 接收服务器消息的线程函数
 DWORD WINAPI CChatRoomClientDlg::receiveMessages(PVOID param)
 {
-	char buffer[102400]; // 用于接收消息的缓冲区
+	char buffer[10240]; // 用于接收消息的缓冲区
 	int bytesReceived;
 	while (g_ChatRoomClientDlg->g_recvMessageThread == FALSE)
 	{
