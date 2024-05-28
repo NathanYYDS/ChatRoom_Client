@@ -149,8 +149,15 @@ void CChatRoomClientDlg::OnBnClickedServerSetting()
 //注册按钮功能实现
 void CChatRoomClientDlg::OnBnClickedSignup()
 {
-	CSignUpDlg SignUpDlg;
-	SignUpDlg.DoModal();//弹出模态对话框
+	if (connectStatus == TRUE)
+	{
+		CSignUpDlg SignUpDlg;
+		SignUpDlg.DoModal();//弹出模态对话框
+	}
+	else
+	{
+		MessageBox("未连接至服务器");
+	}
 }
 
 //登录按钮功能实现
@@ -158,7 +165,13 @@ void CChatRoomClientDlg::OnBnClickedSignin()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	// 获取账号和密码框的数据
-	UpdateData(true);
+	UpdateData(TRUE); // 更新UI控件数据到成员变量
+
+	CString username = m_username;
+	CString password = m_password;
+
+	GetDlgItemText(IDC_USERNAME, username);
+	GetDlgItemText(IDC_PASSWORD, password);
 
 	// 测试数据是否获取成功
 	//MessageBox(m_username);
@@ -175,37 +188,15 @@ void CChatRoomClientDlg::OnBnClickedSignin()
 		MessageBox("密码字符串非法");
 		return;
 	}
-	if (connectStatus == TRUE)
-	{
-		CString login;
-		login.Format("IIDD:%s", m_username);
-		send(clientSocket, login, login.GetLength(), 0); // 发送包含用户信息的登录消息到服务器
 
-		//设置登录状态成功
-		signInStatus = TRUE;
+	// 构建请求字符串 ACTION|USERNAME|PASSWORD
+	CString request = "LOGIN|" + username + "|" + password;
 
-		//禁用“用户”编辑框
-		GetDlgItem(IDC_USERNAME)->EnableWindow(FALSE);
+	// 等待并接收服务器响应
+	char response[100];
+	send(clientSocket, request, strlen(request), 0);
 
-		//禁用“密码”编辑框
-		GetDlgItem(IDC_PASSWORD)->EnableWindow(FALSE);
 
-		//隐藏“登录”按钮
-		GetDlgItem(IDC_SIGNIN)->ShowWindow(SW_HIDE);
-
-		//隐藏“注册”按钮
-		GetDlgItem(IDC_SIGNUP)->ShowWindow(SW_HIDE);
-
-		//显示“退出登录”按钮
-		GetDlgItem(IDC_SIGNOUT)->ShowWindow(SW_SHOW);
-
-		return;
-	}
-	else 
-	{
-		MessageBox("未连接至服务器");
-		return;
-	}
 	return;
 }
 
@@ -259,11 +250,11 @@ afx_msg LRESULT CChatRoomClientDlg::OnConnect(WPARAM wParam, LPARAM lParam)
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(atoi(ServerSettingDlg.m_port));
 	inet_pton(AF_INET, ServerSettingDlg.m_ip.GetString(), &(serverAddr).sin_addr);
-	
+
 	//设置连接超时
 	//int connectTimeout = 30;
 	//setsockopt(sock, IPPROTO_TCP, TCP_CONNECTIONTIMEOUT, (char*)&connectTimeout, sizeof(connectTimeout));
-	
+
 	if (connect(g_ChatRoomClientDlg->clientSocket, reinterpret_cast<sockaddr*>(&(g_ChatRoomClientDlg->serverAddr)), sizeof(g_ChatRoomClientDlg->serverAddr)) == SOCKET_ERROR)
 	{
 		MessageBox("Error connecting to server.");
@@ -320,11 +311,14 @@ BOOL CChatRoomClientDlg::DestroyWindow()
 DWORD WINAPI CChatRoomClientDlg::receiveMessages(PVOID param)
 {
 	char buffer[10240]; // 用于接收消息的缓冲区
-	int bytesReceived;
+	int bytesReceived, i;
+	char register_failde[10] = "REGISTER_";//注册失败标值
+
 	while (g_ChatRoomClientDlg->g_recvMessageThread == FALSE)
 	{
 		// 接收服务器消息
 		bytesReceived = recv(g_ChatRoomClientDlg->clientSocket, buffer, sizeof(buffer), 0);
+
 
 		// 如果接收到的字节数小于等于0，表示与服务器断开连接
 		if (bytesReceived <= 0)
@@ -355,10 +349,74 @@ DWORD WINAPI CChatRoomClientDlg::receiveMessages(PVOID param)
 
 			break;
 		}
-
 		//溢出漏洞---------------------------------溢出漏洞----------------------------------溢出漏洞
 		buffer[bytesReceived] = '\0'; // 添加字符串结束符
 		//溢出漏洞---------------------------------溢出漏洞----------------------------------溢出漏洞
+		// 
+		// 
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//检查是否注册失败
+		for (i = 0; register_failde[i] != '\0'; i++)
+		{
+			register_failde[i] = buffer[i];
+		}
+
+		if (strcmp(register_failde, "REGISTER_") == 0)
+		{
+			if (strcmp(buffer, "REGISTER_SUCCESS")==0)
+			{
+				g_ChatRoomClientDlg->MessageBox("注册成功");
+				continue;
+			}
+			else
+			{
+				sprintf_s(buffer, "%s", buffer);
+				g_ChatRoomClientDlg->MessageBox(buffer);
+				continue;
+			}
+
+
+		}
+
+		if (bytesReceived > 0 && (!strcmp(buffer, "LOGIN_SUCCESS") || !strcmp(buffer, "LOGIN_FAILED")))
+		{
+			//设置登录状态成功
+			if (!strcmp(buffer, "LOGIN_SUCCESS"))
+			{
+				g_ChatRoomClientDlg->signInStatus = TRUE;
+
+
+				//禁用“用户”编辑框
+				g_ChatRoomClientDlg->GetDlgItem(IDC_USERNAME)->EnableWindow(FALSE);
+
+				//禁用“密码”编辑框
+				g_ChatRoomClientDlg->GetDlgItem(IDC_PASSWORD)->EnableWindow(FALSE);
+
+				//隐藏“登录”按钮
+				g_ChatRoomClientDlg->GetDlgItem(IDC_SIGNIN)->ShowWindow(SW_HIDE);
+
+				//隐藏“注册”按钮
+				g_ChatRoomClientDlg->GetDlgItem(IDC_SIGNUP)->ShowWindow(SW_HIDE);
+
+				//显示“退出登录”按钮
+				g_ChatRoomClientDlg->GetDlgItem(IDC_SIGNOUT)->ShowWindow(SW_SHOW);
+
+				continue;
+			}
+
+			// 登录失败处理
+			else if (!strcmp(buffer, "LOGIN_FAILED"))
+			{
+				g_ChatRoomClientDlg->MessageBox("登录失败");
+				continue;
+			}
+
+		}
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 
 		//将下一条消息加入CString
 		g_ChatRoomClientDlg->g_Message.Insert(g_ChatRoomClientDlg->g_Message.GetLength(), buffer);

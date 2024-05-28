@@ -22,7 +22,9 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	// 注册的用户名
-	CEdit m_user;
 	afx_msg void OnBnClickedSignupConfirm();
+
+	CString m_user;
+	CString m_pass2;
+	CString m_pass1;
 };
